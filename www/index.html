@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <script src="./js/app.js"></script>
+    <script>
+      if (location.hostname === 'localhost' && !window.IS_PRODUCTION) {
+        const esbuildEventSource = new EventSource('/esbuild');
+        esbuildEventSource.addEventListener('change', () => {
+          location.reload();
+        });
+
+        window.addEventListener('beforeunload', () => {
+          esbuildEventSource.close();
+        });
+      }
+    </script>
+  </body>
+</html>

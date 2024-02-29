@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "esbuild": "0.20.1",
+    "live-server": "^1.1.0"
+  },
+  "scripts": {
+    "build": "esbuild src/app.ts --bundle --outdir=www/js --define:window.IS_PRODUCTION=false --watch --servedir=www"
+  }
+}
