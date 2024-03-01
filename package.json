@@ -1,13 +1,14 @@
 {
-  "dependencies": {
-    "prettier": "^3.2.5",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
-  },
-  "devDependencies": {
-    "esbuild": "0.20.1"
-  },
-  "scripts": {
-    "build": "esbuild src/app.ts --bundle --outdir=www/js --define:window.IS_PRODUCTION=false --watch --servedir=www"
-  }
+	"dependencies": {
+		"prettier": "^3.2.5",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.3.3"
+	},
+	"devDependencies": {
+		"esbuild": "0.20.1"
+	},
+	"scripts": {
+		"dev": "esbuild src/index.ts --bundle --outfile=www/js/bundle.js --define:window.IS_PRODUCTION=false --watch --servedir=www",
+		"build": "esbuild src/index.ts --bundle --outfile=www/js/bundle.js --define:window.ISPRODUCTION=true"
+	}
 }
