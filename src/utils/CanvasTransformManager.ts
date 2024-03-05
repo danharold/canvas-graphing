@@ -28,10 +28,6 @@ export class CanvasTransformManager {
 		window.addEventListener('mousemove', (e) => this.pan(e));
 		window.addEventListener('wheel', (e) => this.zoom(e));
 		this.resizeCanvas();
-		this.vt.offset = {
-			x: canvas.width / 2,
-			y: canvas.height / 2
-		};
 	}
 
 	// resize canvas to full screen and redraw
