@@ -3,6 +3,7 @@ import { CanvasTransformManager } from '../utils/CanvasTransformManager';
 import { Position, Vector2D, worldToPos } from '../utils/graphicsUtils';
 import { plotLine } from '../utils/drawingUtils';
 import Square from './Square';
+import { updateDebugInfo } from '../utils/ui';
 
 export default class Graph {
 	transform: CanvasTransformManager;
@@ -13,7 +14,7 @@ export default class Graph {
 
 		// init transform manager
 		// set initial scale and offset for unit grid lines
-		this.transform = new CanvasTransformManager();
+		this.transform = new CanvasTransformManager(5, 150);
 		this.transform.vt.scale = 50;
 		this.transform.vt.offset = {
 			x: canvas.width / 2 / this.transform.vt.scale,
@@ -57,7 +58,7 @@ export default class Graph {
 	}
 
 	drawGrid() {
-		const worldSpacing = 1;
+		let worldSpacing = 1;
 		const count: Vector2D = {
 			x: canvas.width / (worldSpacing * this.transform.vt.scale),
 			y: canvas.height / (worldSpacing * this.transform.vt.scale)
@@ -92,18 +93,6 @@ export default class Graph {
 			this.squares[i].draw(this.transform.vt);
 		}
 
-		ctx.fillStyle = 'white';
-		ctx.font = '50px roman';
-		let test = {
-			'(+x,+y)': worldToPos({ x: 250, y: 250 }, this.transform.vt),
-			'(-x,+y)': worldToPos({ x: -250, y: 250 }, this.transform.vt),
-			'(+x,-y)': worldToPos({ x: 250, y: -250 }, this.transform.vt),
-			'(-x,-y)': worldToPos({ x: -250, y: -250 }, this.transform.vt)
-		};
-		for (const [key, value] of Object.entries(test)) {
-			ctx.fillText(key, value.screen.x, value.screen.y);
-		}
-
 		plotLine(
 			{ x: -100, y: -100 },
 			{ x: 100, y: 100 },
@@ -117,6 +106,7 @@ export default class Graph {
 
 	update() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		updateDebugInfo(this.transform);
 		this.draw();
 		requestAnimationFrame(() => this.update());
 	}

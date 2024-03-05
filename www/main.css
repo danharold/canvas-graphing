@@ -17,3 +17,21 @@ body {
 canvas {
 	display: block;
 }
+
+#canvas-container {
+	position: relative;
+}
+
+#ui {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background: rgba(255, 255, 255, 0.12); /* Semi-transparent background */
+	color: white;
+	padding: 5px;
+	border-radius: 4px;
+	width: 180px;
+	pointer-events: none; /* Ensures clicks pass through to canvas */
+	font-family: monospace;
+	word-spacing: 0vh;
+}

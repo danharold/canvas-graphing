@@ -20,8 +20,12 @@ export class CanvasTransformManager {
 		world: { x: 0, y: 0 },
 		screen: { x: 0, y: 0 }
 	};
+	minScale: number = 0.1;
+	maxScale: number = 150;
 
-	constructor() {
+	constructor(minScale: number, maxScale: number) {
+		this.minScale = minScale;
+		this.maxScale = maxScale;
 		window.addEventListener('resize', () => this.resizeCanvas());
 		window.addEventListener('mousedown', (e) => this.toggleDown(e));
 		window.addEventListener('mouseup', (e) => this.toggleUp(e));
@@ -65,9 +69,13 @@ export class CanvasTransformManager {
 
 	private zoom(e: WheelEvent): void {
 		if (e.deltaY > 0) {
-			this.vt.scale *= 1 / 1.2;
+			if (this.vt.scale > this.minScale) {
+				this.vt.scale *= 1 / 1.2;
+			}
 		} else if (e.deltaY < 0) {
-			this.vt.scale *= 1.2;
+			if (this.vt.scale < this.maxScale) {
+				this.vt.scale *= 1.2;
+			}
 		}
 		let mousePosAfterZoom = screenToPos(this.currentMousePos.screen, this.vt);
 		this.vt.offset.x +=
