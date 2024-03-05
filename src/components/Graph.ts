@@ -1,36 +1,31 @@
-import { getMousePos, MousePosition } from '../utils/inputHandler';
-import { screenToWorld, worldToScreen } from '../utils/graphicsUtils';
+import { getMousePos } from '../utils/inputHandler';
+import {
+	Position,
+	ViewTransform,
+	screenToPos,
+	worldToPos
+} from '../utils/graphicsUtils';
+import { canvas, ctx } from '../utils/CanvasContextManager';
 import Square from './Square';
 
 export default class Graph {
-	private canvas: HTMLCanvasElement;
-
 	private clicked: boolean = false;
-	mouseClickPos: MousePosition = {
-		wx: 0,
-		wy: 0,
-		sx: 0,
-		sy: 0
+	mouseClickPos: Position = {
+		world: { x: 0, y: 0 },
+		screen: { x: 0, y: 0 }
 	};
-	currentMousePos: MousePosition = {
-		wx: 0,
-		wy: 0,
-		sx: 0,
-		sy: 0
+	currentMousePos: Position = {
+		world: { x: 0, y: 0 },
+		screen: { x: 0, y: 0 }
 	};
-
-	offsetX: number = 0;
-	offsetY: number = 0;
-	scale: number = 1;
+	vt: ViewTransform = {
+		offset: { x: 0, y: 0 },
+		scale: 1
+	};
 
 	private squares: Square[] = [];
 
-	constructor(canvas: HTMLCanvasElement) {
-		this.canvas = canvas;
-		this.init();
-	}
-
-	private init(): void {
+	constructor() {
 		window.addEventListener('resize', () => this.resizeCanvas());
 		window.addEventListener('mousedown', (e) => this.toggleDown(e));
 		window.addEventListener('mouseup', (e) => this.toggleUp(e));
@@ -41,8 +36,8 @@ export default class Graph {
 	}
 
 	private resizeCanvas(): void {
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 		this.draw();
 	}
 
@@ -50,13 +45,7 @@ export default class Graph {
 	// set clicked to true and record click location
 	private toggleDown(e: MouseEvent) {
 		this.clicked = true;
-		this.mouseClickPos = getMousePos(
-			e,
-			this.canvas,
-			this.offsetX,
-			this.offsetY,
-			this.scale
-		);
+		this.mouseClickPos = getMousePos(e, this.vt);
 	}
 
 	// if mouse is not clicked, set clicked to false
@@ -70,37 +59,33 @@ export default class Graph {
 	// then pan, which means update the offset and draw
 	// this means the canvas is static when no panning is occurring
 	private pan(e: MouseEvent) {
-		this.currentMousePos = getMousePos(
-			e,
-			this.canvas,
-			this.offsetX,
-			this.offsetY,
-			this.scale
-		);
+		this.currentMousePos = getMousePos(e, this.vt);
 		if (this.clicked) {
-			this.offsetX += this.currentMousePos.wx - this.mouseClickPos.wx;
-			this.offsetY += this.currentMousePos.wy - this.mouseClickPos.wy;
+			this.vt.offset.x +=
+				this.currentMousePos.world.x - this.mouseClickPos.world.x;
+			this.vt.offset.y +=
+				this.currentMousePos.world.y - this.mouseClickPos.world.y;
 			this.redraw();
 		}
 	}
 
 	private zoom(e: WheelEvent) {
 		if (e.deltaY > 0) {
-			this.scale *= 1 / 1.2;
+			this.vt.scale *= 1 / 1.2;
 		} else if (e.deltaY < 0) {
-			this.scale *= 1.2;
+			this.vt.scale *= 1.2;
 		}
-		let mouseWorldPosAfterZoom = screenToWorld(
-			this.currentMousePos.sx,
-			this.currentMousePos.sy,
-			this.offsetX,
-			this.offsetY,
-			this.scale
+		let mousePosAfterZoom = screenToPos(this.currentMousePos.screen, this.vt);
+		console.log(
+			'Before',
+			this.currentMousePos.world.x,
+			this.currentMousePos.world.y
 		);
-		console.log('Before', this.currentMousePos.wx, this.currentMousePos.wy);
-		console.log('After', mouseWorldPosAfterZoom[0], mouseWorldPosAfterZoom[0]);
-		this.offsetX += mouseWorldPosAfterZoom[0] - this.currentMousePos.wx;
-		this.offsetY += mouseWorldPosAfterZoom[1] - this.currentMousePos.wy;
+		console.log('After', mousePosAfterZoom.world.x, mousePosAfterZoom.world.x);
+		this.vt.offset.x +=
+			mousePosAfterZoom.world.x - this.currentMousePos.world.x;
+		this.vt.offset.y +=
+			mousePosAfterZoom.world.y - this.currentMousePos.world.y;
 		this.redraw();
 	}
 
@@ -111,8 +96,7 @@ export default class Graph {
 			let randomHeight = Math.random() * 100;
 			let colour = 'white';
 			let sq = new Square(
-				this.currentMousePos.wx,
-				this.currentMousePos.wy,
+				this.currentMousePos,
 				randomWidth,
 				randomHeight,
 				colour
@@ -124,11 +108,10 @@ export default class Graph {
 	}
 
 	private draw(): void {
-		let ctx = this.canvas.getContext('2d');
 		console.log(ctx);
 		if (ctx) {
 			for (let i = 0; i < this.squares.length; i++) {
-				this.squares[i].draw(this.offsetX, this.offsetY, this.scale);
+				this.squares[i].draw(this.vt);
 			}
 			ctx.fillStyle = 'white';
 			ctx.fillRect(10, 10, 100, 100);
@@ -136,9 +119,8 @@ export default class Graph {
 	}
 
 	private clear(): void {
-		let ctx = this.canvas.getContext('2d');
 		if (ctx) {
-			ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 		}
 	}
 

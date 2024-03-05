@@ -1,27 +1,16 @@
-import { screenToWorld } from './graphicsUtils';
+import {
+	screenToPos,
+	ViewTransform,
+	Position,
+	Vector2D
+} from './graphicsUtils';
+import { canvas } from './CanvasContextManager';
 
-export interface MousePosition {
-	wx: number;
-	wy: number;
-	sx: number;
-	sy: number;
-}
-
-export function getMousePos(
-	event: MouseEvent,
-	canvas: HTMLCanvasElement,
-	offsetX: number,
-	offsetY: number,
-	scale: number
-): MousePosition {
+export function getMousePos(event: MouseEvent, vt: ViewTransform): Position {
 	let rect = canvas.getBoundingClientRect();
-	let sx = event.clientX - rect.left;
-	let sy = event.clientY - rect.top;
-	let [wx, wy] = screenToWorld(sx, sy, offsetX, offsetY, scale);
-	return {
-		sx: sx,
-		sy: sy,
-		wx: wx,
-		wy: wy
+	let screenPos: Vector2D = {
+		x: event.clientX - rect.left,
+		y: event.clientY - rect.top
 	};
+	return screenToPos(screenPos, vt);
 }

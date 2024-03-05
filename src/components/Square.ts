@@ -1,29 +1,32 @@
-import { worldToScreen } from '../utils/graphicsUtils';
+import { Position, ViewTransform, worldToPos } from '../utils/graphicsUtils';
 import { ctx } from '../utils/CanvasContextManager';
 
 export default class Square {
-	// x and y are the center point of the square in world space
-	x: number;
-	y: number;
+	pos: Position;
 	w: number;
 	h: number;
 	colour: string;
 
-	constructor(x: number, y: number, w: number, h: number, colour: string) {
-		this.x = x;
-		this.y = y;
+	constructor(pos: Position, w: number, h: number, colour: string) {
+		this.pos = pos;
 		this.w = w;
 		this.h = h;
 		this.colour = colour;
 	}
 
-	draw(offsetX: number, offsetY: number, scale: number) {
-		const scaledWidth = this.w * scale;
-		const scaledHeight = this.h * scale;
-		const [x, y] = worldToScreen(this.x, this.y, offsetX, offsetY, scale);
+	draw(vt: ViewTransform) {
+		// draw at scaled size and calculate new screen position
+		const scaledWidth = this.w * vt.scale;
+		const scaledHeight = this.h * vt.scale;
+		this.pos = worldToPos(this.pos.world, vt);
 		console.log(ctx);
-		console.log(offsetX, offsetY, scale);
+		console.log(vt.offset.x, vt.offset, vt.scale);
 		ctx.fillStyle = 'white';
-		ctx.fillRect(x, y, scaledWidth, scaledHeight);
+		ctx.fillRect(
+			this.pos.screen.x,
+			this.pos.screen.y,
+			scaledWidth,
+			scaledHeight
+		);
 	}
 }

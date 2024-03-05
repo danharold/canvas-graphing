@@ -27,7 +27,15 @@ class CanvasContextManager {
 		}
 		return this.ctx;
 	}
+
+	public getCanvas(): HTMLCanvasElement {
+		if (!this.canvas) {
+			throw new Error('HTMLCanvasElement is not initialised.');
+		}
+		return this.canvas;
+	}
 }
 
 const ccm = CanvasContextManager.getInstance('canvas');
 export const ctx = ccm.getContext();
+export const canvas = ccm.getCanvas();
