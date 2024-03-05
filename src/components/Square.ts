@@ -19,9 +19,7 @@ export default class Square {
 		const scaledWidth = this.w * vt.scale;
 		const scaledHeight = this.h * vt.scale;
 		this.pos = worldToPos(this.pos.world, vt);
-		console.log(ctx);
-		console.log(vt.offset.x, vt.offset, vt.scale);
-		ctx.fillStyle = 'white';
+		ctx.fillStyle = this.colour;
 		ctx.fillRect(
 			this.pos.screen.x,
 			this.pos.screen.y,
