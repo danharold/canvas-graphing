@@ -128,7 +128,7 @@ export default class Graph {
 		console.log(ctx);
 		if (ctx) {
 			for (let i = 0; i < this.squares.length; i++) {
-				this.squares[i].draw(ctx, this.offsetX, this.offsetY, this.scale);
+				this.squares[i].draw(this.offsetX, this.offsetY, this.scale);
 			}
 			ctx.fillStyle = 'white';
 			ctx.fillRect(10, 10, 100, 100);

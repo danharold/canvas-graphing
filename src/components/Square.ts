@@ -1,4 +1,5 @@
 import { worldToScreen } from '../utils/graphicsUtils';
+import { ctx } from '../utils/CanvasContextManager';
 
 export default class Square {
 	// x and y are the center point of the square in world space
@@ -16,12 +17,7 @@ export default class Square {
 		this.colour = colour;
 	}
 
-	draw(
-		ctx: CanvasRenderingContext2D,
-		offsetX: number,
-		offsetY: number,
-		scale: number
-	) {
+	draw(offsetX: number, offsetY: number, scale: number) {
 		const scaledWidth = this.w * scale;
 		const scaledHeight = this.h * scale;
 		const [x, y] = worldToScreen(this.x, this.y, offsetX, offsetY, scale);
