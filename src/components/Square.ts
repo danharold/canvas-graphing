@@ -1,7 +1,8 @@
 import { Position, ViewTransform, worldToPos } from '../utils/graphicsUtils';
 import { ctx } from '../utils/CanvasContextManager';
+import { Drawable } from './models';
 
-export default class Square {
+export default class Square implements Drawable {
 	pos: Position;
 	w: number;
 	h: number;

@@ -1,13 +1,15 @@
 import { canvas, ctx } from '../utils/CanvasContextManager';
 import { CanvasTransformManager } from '../utils/CanvasTransformManager';
-import { Position, Vector2D, worldToPos } from '../utils/graphicsUtils';
-import { plotLine } from '../utils/drawingUtils';
+import { Vector2D, worldToPos, distance } from '../utils/graphicsUtils';
 import Square from './Square';
 import { updateDebugInfo } from '../utils/ui';
+import { Drawable } from './models/Drawable';
+import { Line } from './models';
 
 export default class Graph {
 	transform: CanvasTransformManager;
 	squares: Square[] = [];
+	drawables: Drawable[] = [];
 
 	constructor() {
 		canvas.style.backgroundColor = 'black';
@@ -22,12 +24,13 @@ export default class Graph {
 		};
 
 		window.addEventListener('keydown', (e) => this.spawnSquare(e));
+		window.addEventListener('mousemove', (e) => this.hoverPoint(e));
 
 		this.update();
 	}
 
 	// spawn square on mouse when pressing E
-	spawnSquare(e: KeyboardEvent) {
+	private spawnSquare(e: KeyboardEvent) {
 		if (e.key === 'e' || e.key === 'E') {
 			let randomWidth = Math.random();
 			let randomHeight = Math.random();
@@ -43,7 +46,24 @@ export default class Graph {
 		}
 	}
 
-	drawAxes() {
+	// calculate the closest line segment of any drawable object to the mouse
+	// and place a point at the shortest distance
+	private hoverPoint(e: MouseEvent) {
+		// for lines and linear functions
+		// we can check against its entirety
+		const threshold = 5;
+
+		let closestLine = null;
+		let shortestDistance = Infinity;
+
+		for (const drawable of this.drawables) {
+			if (drawable instanceof Line) {
+				//todo
+			}
+		}
+	}
+
+	private drawAxes() {
 		const origin = worldToPos({ x: 0, y: 0 }, this.transform.vt);
 		ctx.save();
 		ctx.beginPath();
@@ -57,7 +77,7 @@ export default class Graph {
 		ctx.stroke();
 	}
 
-	drawGrid() {
+	private drawGrid() {
 		let worldSpacing = 1;
 		const count: Vector2D = {
 			x: canvas.width / (worldSpacing * this.transform.vt.scale),
@@ -87,24 +107,26 @@ export default class Graph {
 		ctx.restore();
 	}
 
-	draw(): void {
+	// alternative to g.drawables.push()
+	public add(model: Drawable) {
+		this.drawables.push(model);
+	}
+
+	private draw(): void {
 		this.drawGrid();
+
 		for (let i = 0; i < this.squares.length; i++) {
 			this.squares[i].draw(this.transform.vt);
 		}
 
-		plotLine(
-			{ x: -100, y: -100 },
-			{ x: 100, y: 100 },
-			2,
-			'red',
-			this.transform.vt
-		);
+		for (const i in this.drawables) {
+			this.drawables[i].draw(this.transform.vt);
+		}
 
 		this.drawAxes();
 	}
 
-	update() {
+	private update() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		updateDebugInfo(this.transform);
 		this.draw();

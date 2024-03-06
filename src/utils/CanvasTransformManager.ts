@@ -2,7 +2,8 @@ import {
 	Position,
 	ViewTransform,
 	Vector2D,
-	screenToPos
+	screenToPos,
+	worldToPos
 } from './graphicsUtils';
 import { canvas, ctx } from './CanvasContextManager';
 

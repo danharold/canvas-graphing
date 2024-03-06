@@ -15,6 +15,11 @@ export interface ViewTransform {
 	scale: number;
 }
 
+export interface WorldBoundary {
+	x: { min: number; max: number };
+	y: { min: number; max: number };
+}
+
 export function worldToPos(worldPos: Vector2D, vt: ViewTransform): Position {
 	return {
 		world: worldPos,
@@ -33,4 +38,32 @@ export function screenToPos(screenPos: Vector2D, vt: ViewTransform): Position {
 			y: (canvas.height - screenPos.y) / vt.scale - vt.offset.y
 		}
 	};
+}
+
+export function getWorldBoundary(vt: ViewTransform): WorldBoundary {
+	const topLeft = screenToPos({ x: 0, y: 0 }, vt);
+	const bottomRight = screenToPos({ x: canvas.width, y: canvas.height }, vt);
+
+	return {
+		x: {
+			min: topLeft.world.x,
+			max: bottomRight.world.x
+		},
+		y: {
+			min: bottomRight.world.y,
+			max: topLeft.world.y
+		}
+	};
+}
+
+export function distance(a: Vector2D, b: Vector2D): number {
+	return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+export function crossProduct(a: Vector2D, b: Vector2D): number {
+	return a.x * b.y - a.y * b.x;
+}
+
+export function magnitude(a: Vector2D): number {
+	return Math.sqrt(a.x ** 2 + a.y ** 2);
 }
