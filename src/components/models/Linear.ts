@@ -46,10 +46,6 @@ export class Linear implements Drawable {
 
 		// calculate ap = p - a
 		const ap: Vector2D = { x: p.x - this.a.x, y: p.y - this.a.y };
-		console.log('CLOSEST POINT TO LINE');
-		console.log('a', this.a);
-		console.log('p', p);
-		console.log('ap', ap);
 
 		// project ap onto the line with dir vector b
 		// length ac = (ap . b)/|b|
@@ -57,14 +53,10 @@ export class Linear implements Drawable {
 		// =>     ac = (b/|b|)*(ap . b)/|b|
 		const magb = magnitude(this.b);
 		const acLength: number = dotProduct(ap, this.b) / magb;
-		console.log(dotProduct(ap, this.b));
 		const ac: Vector2D = {
 			x: (acLength * this.b.x) / magb,
 			y: (acLength * this.b.y) / magb
 		};
-		console.log('b', this.b);
-		console.log('acl', acLength);
-		console.log('ac', ac);
 
 		// to get the position vector oc (or just c)
 		// c = oc = oa + ac
@@ -72,7 +64,6 @@ export class Linear implements Drawable {
 			x: this.a.x + ac.x,
 			y: this.a.y + ac.y
 		};
-		console.log(c, distance(p, c));
 		return [c, distance(p, c)];
 	}
 

@@ -55,7 +55,6 @@ export default class Graph {
 				const [p, d]: [Vector2D, number] = drawable.closestPointToLine(
 					this.transform.currentMousePos.world
 				);
-				console.log(drawable.colour, d);
 				if (d < shortestDistance && d <= threshold) {
 					shortestDistance = d;
 					closestLine = drawable;
