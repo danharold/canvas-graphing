@@ -1,6 +1,6 @@
 import { canvas, ctx } from '../utils/CanvasContextManager';
 import { CanvasTransformManager } from '../utils/CanvasTransformManager';
-import { Vector2D, worldToPos, distance } from '../utils/graphicsUtils';
+import { Vector2D, worldToPos, distance } from '../utils/utils';
 import { updateDebugInfo } from '../utils/ui';
 import { Drawable } from './models/Drawable';
 import { Line, Point } from './models';
