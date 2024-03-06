@@ -39,7 +39,7 @@ canvas {
 	position: absolute;
 	box-sizing: border-box;
 	margin-left: -320px;
-	width: 180px;
+	width: 250px;
 	transition: all 0.3s;
 	padding: 1rem;
 }

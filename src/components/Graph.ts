@@ -1,6 +1,6 @@
 import { canvas, ctx } from '../utils/CanvasContextManager';
 import { CanvasTransformManager } from '../utils/CanvasTransformManager';
-import { Vector2D, worldToPos, distance } from '../utils/utils';
+import { Vector2D, worldToPos, distance, Position } from '../utils/utils';
 import { updateDebugInfo } from '../utils/ui';
 import { Drawable } from './models/Drawable';
 import { Point, Linear } from './models';
@@ -9,6 +9,7 @@ export default class Graph {
 	transform: CanvasTransformManager;
 	drawables: Drawable[] = [];
 	hover: Point | null = null;
+	hoverPos: Position | null = null;
 
 	constructor() {
 		canvas.style.backgroundColor = 'black';
@@ -23,7 +24,7 @@ export default class Graph {
 		};
 
 		window.addEventListener('keydown', (e) => this.spawnPoint(e));
-		window.addEventListener('mousemove', (e) => this.hoverPoint(e));
+		window.addEventListener('mousemove', () => this.updateHoverPoint());
 
 		this.update();
 	}
@@ -39,36 +40,85 @@ export default class Graph {
 
 	// calculate the closest line segment of any drawable object to the mouse
 	// and place a point at the shortest distance
-	private hoverPoint(e: MouseEvent) {
+	private updateHoverPoint() {
 		// for lines and linear functions
 		// we can check against its entirety
-		//const threshold = 1;
+		const threshold = 1;
 
-		let closestLine = null;
-		let shortestDistance = Infinity;
+		let closestLine: Linear | null = null;
+		let closestPoint: Vector2D | null = null;
+		let shortestDistance: number = Infinity;
+		let isFound: boolean = false;
 
 		for (const drawable of this.drawables) {
 			if (drawable instanceof Linear) {
-				const d = Math.abs(
-					drawable.distancePointToLine(this.transform.currentMousePos.world)
+				const [p, d]: [Vector2D, number] = drawable.closestPointToLine(
+					this.transform.currentMousePos.world
 				);
 				console.log(drawable.colour, d);
-				if (
-					d < shortestDistance
-					//&& d <= threshold
-				) {
+				if (d < shortestDistance && d <= threshold) {
 					shortestDistance = d;
 					closestLine = drawable;
+					closestPoint = p;
+					isFound = true;
 				}
 			}
 		}
 
-		if (closestLine != null) {
+		if (closestLine != null && closestPoint != null) {
 			this.hover = new Point(
-				this.transform.currentMousePos.world,
-				10,
-				closestLine.colour
+				closestPoint as Vector2D,
+				6,
+				closestLine.colour,
+				2,
+				'rgba(255,255,255,0.3)'
 			);
+			this.hoverPos = worldToPos(closestPoint, this.transform.vt);
+		} else {
+			this.hover = null;
+			this.hoverPos = null;
+		}
+	}
+
+	private drawHover() {
+		if (this.hoverPos != null && this.hover != null) {
+			// draw point
+			this.hover?.draw(this.transform.vt);
+
+			// offsets and label text for determining label width
+			const boxOffset = 5;
+			const textOffset = {
+				x: 8,
+				y: 5
+			};
+			const text = `(${this.hoverPos.world.x.toFixed(2)},${this.hoverPos.world.y.toFixed(2)})`;
+			const widthPerChar = 10;
+
+			// draw box
+			ctx.save();
+			ctx.beginPath();
+			ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+			ctx.roundRect(
+				this.hoverPos?.screen.x + boxOffset,
+				this.hoverPos?.screen.y - boxOffset,
+				widthPerChar * text.length,
+				-20,
+				3
+			);
+			ctx.fill();
+			ctx.restore();
+
+			// draw text
+			ctx.save();
+			ctx.beginPath();
+			ctx.font = '16px monospace';
+			ctx.fillStyle = 'black';
+			ctx.fillText(
+				`(${this.hoverPos.world.x.toFixed(2)},${this.hoverPos.world.y.toFixed(2)})`,
+				this.hoverPos.screen.x + boxOffset + textOffset.x,
+				this.hoverPos.screen.y - boxOffset - textOffset.y
+			);
+			ctx.restore();
 		}
 	}
 
@@ -127,7 +177,8 @@ export default class Graph {
 		for (const drawable of this.drawables) {
 			drawable.draw(this.transform.vt);
 		}
-		this.hover?.draw(this.transform.vt);
+
+		this.drawHover();
 
 		this.drawAxes();
 	}
