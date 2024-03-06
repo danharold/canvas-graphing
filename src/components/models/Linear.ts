@@ -28,25 +28,26 @@ export class Linear implements Drawable {
 		this.w = w;
 		this.colour = colour;
 
-		this.repr = `y=${m}x+${c}`;
+		this.repr = `y=${m === 0 ? '' : m === 1 ? 'x' : m === -1 ? '-x' : m + 'x'}${
+			c === 0 ? '' : c < 0 ? c : '+' + c
+		}`;
 
 		// get vector representation
-		const p1: Vector2D = { x: 0, y: c };
-		const p2: Vector2D = { x: -c / m, y: 0 };
-		this.dirVec = { x: p1.x - p2.x, y: p1.x - p2.x };
+		const p: Vector2D = { x: 0, y: c };
+		this.dirVec = { x: 1, y: 1 * m };
 		const magnitudeDirVec = magnitude(this.dirVec);
 		this.dirVec = {
 			x: this.dirVec.x / magnitudeDirVec,
 			y: this.dirVec.y / magnitudeDirVec
 		};
-		this.posVec = { x: p1.x, y: p1.y };
+		this.posVec = { x: p.x, y: p.y };
 	}
 
 	distancePointToLine(a: Vector2D) {
 		// d = || v x dirVec ||/|| dirVec ||
 		// where v is the vector between the point and a point on the line
 		const v: Vector2D = { x: a.x - this.posVec.x, y: a.y - this.posVec.y };
-		return crossProduct(v, this.dirVec) / magnitude(this.dirVec);
+		return crossProduct(v, this.dirVec);
 	}
 
 	fx(x: number) {

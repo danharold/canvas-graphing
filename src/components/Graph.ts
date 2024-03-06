@@ -3,11 +3,12 @@ import { CanvasTransformManager } from '../utils/CanvasTransformManager';
 import { Vector2D, worldToPos, distance } from '../utils/utils';
 import { updateDebugInfo } from '../utils/ui';
 import { Drawable } from './models/Drawable';
-import { Line, Point } from './models';
+import { Point, Linear } from './models';
 
 export default class Graph {
 	transform: CanvasTransformManager;
 	drawables: Drawable[] = [];
+	hover: Point | null = null;
 
 	constructor() {
 		canvas.style.backgroundColor = 'black';
@@ -41,15 +42,33 @@ export default class Graph {
 	private hoverPoint(e: MouseEvent) {
 		// for lines and linear functions
 		// we can check against its entirety
-		const threshold = 5;
+		//const threshold = 1;
 
 		let closestLine = null;
 		let shortestDistance = Infinity;
 
 		for (const drawable of this.drawables) {
-			if (drawable instanceof Line) {
-				//todo
+			if (drawable instanceof Linear) {
+				const d = Math.abs(
+					drawable.distancePointToLine(this.transform.currentMousePos.world)
+				);
+				console.log(drawable.colour, d);
+				if (
+					d < shortestDistance
+					//&& d <= threshold
+				) {
+					shortestDistance = d;
+					closestLine = drawable;
+				}
 			}
+		}
+
+		if (closestLine != null) {
+			this.hover = new Point(
+				this.transform.currentMousePos.world,
+				10,
+				closestLine.colour
+			);
 		}
 	}
 
@@ -105,9 +124,10 @@ export default class Graph {
 	private draw(): void {
 		this.drawGrid();
 
-		for (const i in this.drawables) {
-			this.drawables[i].draw(this.transform.vt);
+		for (const drawable of this.drawables) {
+			drawable.draw(this.transform.vt);
 		}
+		this.hover?.draw(this.transform.vt);
 
 		this.drawAxes();
 	}
