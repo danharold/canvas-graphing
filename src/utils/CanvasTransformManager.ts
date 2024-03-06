@@ -4,7 +4,7 @@ import {
 	Vector2D,
 	screenToPos,
 	worldToPos
-} from './graphicsUtils';
+} from './utils';
 import { canvas, ctx } from './CanvasContextManager';
 
 export class CanvasTransformManager {

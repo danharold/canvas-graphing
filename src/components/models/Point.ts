@@ -1,4 +1,4 @@
-import { Vector2D, ViewTransform, worldToPos } from '../../utils/graphicsUtils';
+import { Vector2D, ViewTransform, worldToPos, round } from '../../utils/utils';
 import { Drawable } from './Drawable';
 import { ctx } from '../../utils/CanvasContextManager';
 
@@ -8,6 +8,7 @@ export class Point implements Drawable {
 	colour: string;
 	outlineWidth: number;
 	outlineColour: string;
+	repr: string;
 
 	constructor(
 		center: Vector2D,
@@ -22,6 +23,8 @@ export class Point implements Drawable {
 
 		this.outlineWidth = outlineWidth;
 		this.outlineColour = outlineColour;
+
+		this.repr = `point (${round(this.center.x, 2)}, ${round(this.center.y, 2)})`;
 	}
 
 	draw(vt: ViewTransform): void {

@@ -67,3 +67,7 @@ export function crossProduct(a: Vector2D, b: Vector2D): number {
 export function magnitude(a: Vector2D): number {
 	return Math.sqrt(a.x ** 2 + a.y ** 2);
 }
+
+export function round(num: number, n: number): number {
+	return Math.round(num * 10 ** n) / 10 ** n;
+}

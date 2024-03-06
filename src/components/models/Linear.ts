@@ -5,7 +5,7 @@ import {
 	magnitude,
 	crossProduct,
 	getWorldBoundary
-} from '../../utils/graphicsUtils';
+} from '../../utils/utils';
 import { Drawable } from './Drawable';
 import { ctx } from '../../utils/CanvasContextManager';
 
@@ -20,11 +20,15 @@ export class Linear implements Drawable {
 	posVec: Vector2D;
 	dirVec: Vector2D;
 
+	repr: string;
+
 	constructor(m: number, c: number, w: number, colour: string) {
 		this.m = m;
 		this.c = c;
 		this.w = w;
 		this.colour = colour;
+
+		this.repr = `y=${m}x+${c}`;
 
 		// get vector representation
 		const p1: Vector2D = { x: 0, y: c };
@@ -36,10 +40,6 @@ export class Linear implements Drawable {
 			y: this.dirVec.y / magnitudeDirVec
 		};
 		this.posVec = { x: p1.x, y: p1.y };
-
-		console.log(`y+${this.m}x+${this.c}`);
-		console.log(this.posVec);
-		console.log(this.dirVec);
 	}
 
 	distancePointToLine(a: Vector2D) {
@@ -71,13 +71,6 @@ export class Linear implements Drawable {
 		ctx.beginPath();
 		ctx.strokeStyle = this.colour;
 		ctx.lineWidth = this.w;
-		console.log('wd', {
-			x: worldBoundary.x.min,
-			y: this.fx(worldBoundary.x.min)
-		});
-		console.log({ x: worldBoundary.x.max, y: this.fx(worldBoundary.x.max) });
-		console.log(leftScreenPos);
-		console.log(rightScreenPos);
 		ctx.moveTo(leftScreenPos.x, leftScreenPos.y);
 		ctx.lineTo(rightScreenPos.x, rightScreenPos.y);
 		ctx.stroke();

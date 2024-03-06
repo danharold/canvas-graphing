@@ -1,4 +1,4 @@
-import { Vector2D, ViewTransform, worldToPos } from '../../utils/graphicsUtils';
+import { Vector2D, ViewTransform, worldToPos } from '../../utils/utils';
 import { Drawable } from './Drawable';
 import { ctx } from '../../utils/CanvasContextManager';
 
@@ -7,12 +7,14 @@ export class Line implements Drawable {
 	b: Vector2D;
 	w: number;
 	colour: string;
+	repr: string;
 
 	constructor(a: Vector2D, b: Vector2D, w: number, colour: string) {
 		this.a = a;
 		this.b = b;
 		this.w = w;
 		this.colour = colour;
+		this.repr = `line (${a.x}, ${a.y}) -> (${b.x}, ${b.y})`;
 	}
 
 	draw(vt: ViewTransform): void {

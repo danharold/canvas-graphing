@@ -1,14 +1,12 @@
 import { canvas, ctx } from '../utils/CanvasContextManager';
 import { CanvasTransformManager } from '../utils/CanvasTransformManager';
-import { Vector2D, worldToPos, distance } from '../utils/graphicsUtils';
-import Square from './Square';
+import { Vector2D, worldToPos, distance } from '../utils/utils';
 import { updateDebugInfo } from '../utils/ui';
 import { Drawable } from './models/Drawable';
-import { Line } from './models';
+import { Line, Point } from './models';
 
 export default class Graph {
 	transform: CanvasTransformManager;
-	squares: Square[] = [];
 	drawables: Drawable[] = [];
 
 	constructor() {
@@ -23,26 +21,18 @@ export default class Graph {
 			y: canvas.height / 2 / this.transform.vt.scale
 		};
 
-		window.addEventListener('keydown', (e) => this.spawnSquare(e));
+		window.addEventListener('keydown', (e) => this.spawnPoint(e));
 		window.addEventListener('mousemove', (e) => this.hoverPoint(e));
 
 		this.update();
 	}
 
-	// spawn square on mouse when pressing E
-	private spawnSquare(e: KeyboardEvent) {
+	// spawn point on mouse when pressing E
+	private spawnPoint(e: KeyboardEvent) {
 		if (e.key === 'e' || e.key === 'E') {
-			let randomWidth = Math.random();
-			let randomHeight = Math.random();
 			let colour = 'white';
-			let sq = new Square(
-				this.transform.currentMousePos,
-				randomWidth,
-				randomHeight,
-				colour
-			);
-			this.squares.push(sq);
-			console.log(sq.pos.world);
+			let p = new Point(this.transform.currentMousePos.world, 5, colour);
+			this.add(p);
 		}
 	}
 
@@ -115,10 +105,6 @@ export default class Graph {
 	private draw(): void {
 		this.drawGrid();
 
-		for (let i = 0; i < this.squares.length; i++) {
-			this.squares[i].draw(this.transform.vt);
-		}
-
 		for (const i in this.drawables) {
 			this.drawables[i].draw(this.transform.vt);
 		}
@@ -128,7 +114,7 @@ export default class Graph {
 
 	private update() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		updateDebugInfo(this.transform);
+		updateDebugInfo(this.transform, this.drawables);
 		this.draw();
 		requestAnimationFrame(() => this.update());
 	}
