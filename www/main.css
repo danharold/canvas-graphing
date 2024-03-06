@@ -18,18 +18,37 @@ canvas {
 	display: block;
 }
 
-#canvas-container {
+.container {
 	position: relative;
 }
 
-#ui {
+.debug-ui {
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	color: white;
 	padding: 5px;
-	border-radius: 4px;
-	pointer-events: none; /* Ensures clicks pass through to canvas */
+	pointer-events: none;
 	font-family: monospace;
 	word-spacing: 0vh;
+	user-select: none;
+	cursor: pointer;
+}
+
+.debug-ui-info {
+	position: absolute;
+	box-sizing: border-box;
+	margin-left: -320px;
+	width: 180px;
+	transition: all 0.3s;
+	padding: 1rem;
+}
+
+.debug-ui-toggle {
+	pointer-events: all;
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.debug-ui--open {
+	margin-left: 0;
 }

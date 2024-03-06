@@ -2,17 +2,25 @@ import { Drawable } from '../components/models';
 import { CanvasTransformManager } from './CanvasTransformManager';
 import { getWorldBoundary, round } from './utils';
 
+const debugUI = document.querySelector('.debug-ui') as HTMLElement;
+const debugToggle = document.querySelector('.debug-ui-toggle') as HTMLElement;
+const debugInfo = document.querySelector('.debug-ui-info') as HTMLElement;
+
+debugToggle.addEventListener('click', () => {
+	debugInfo.classList.toggle('debug-ui--open');
+	console.log('clicked');
+});
+
 export function updateDebugInfo(
 	transform: CanvasTransformManager,
 	drawables: Drawable[]
 ): void {
-	const ui = document.getElementById('ui') as HTMLElement;
 	const worldBoundary = getWorldBoundary(transform.vt);
 	let drawablesString: string = '';
 	for (const drawable of drawables) {
 		drawablesString += '&nbsp; ' + drawable.repr + '<br>';
 	}
-	ui.innerHTML = `
+	debugInfo.innerHTML = `
         <strong>mouse position</strong><br>
         &nbsp; world: ${round(transform.currentMousePos.world.x, 2)}, ${round(transform.currentMousePos.world.y, 2)}<br>
         &nbsp; screen: ${round(transform.currentMousePos.screen.x, 2)}, ${round(transform.currentMousePos.screen.y, 2)}<br><br>
