@@ -7,13 +7,6 @@ body {
 	width: 100%;
 }
 
-body {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: grey;
-}
-
 canvas {
 	display: block;
 }
@@ -51,4 +44,56 @@ canvas {
 
 .debug-ui--open {
 	margin-left: 0;
+}
+
+.add-ui {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: white;
+	padding: 5px;
+	pointer-events: none;
+	font-family: monospace;
+	word-spacing: 0vh;
+	user-select: none;
+	cursor: pointer;
+}
+
+.add-ui-toggle {
+	pointer-events: all;
+	background-color: rgba(255, 255, 255, 0.3);
+	font-size: 23px;
+	text-align: center;
+	padding: 2px;
+	border-radius: 1px;
+	margin-bottom: 10px;
+}
+
+.add-ui-menu {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 10px;
+	box-sizing: border-box;
+	text-align: right;
+	right: 0;
+	margin-right: -320px;
+	transition: all 0.3s;
+	padding: 0rem;
+	color: #fff;
+	min-width: 150px;
+}
+
+.add-ui-menu > div {
+	pointer-events: all;
+	font-size: 15px;
+	/* background-color: rgba(255, 255, 255, 0.1); */
+	padding: 10px;
+	gap: 10px;
+	border-radius: 3px;
+}
+
+.add-ui--open {
+	margin-right: 0px;
 }

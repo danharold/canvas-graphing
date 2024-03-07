@@ -2,13 +2,18 @@ import { Drawable } from '../components/models';
 import { CanvasTransformManager } from './CanvasTransformManager';
 import { getWorldBoundary } from './utils';
 
-const debugUI = document.querySelector('.debug-ui') as HTMLElement;
 const debugToggle = document.querySelector('.debug-ui-toggle') as HTMLElement;
 const debugInfo = document.querySelector('.debug-ui-info') as HTMLElement;
 
 debugToggle.addEventListener('click', () => {
 	debugInfo.classList.toggle('debug-ui--open');
-	console.log('clicked');
+});
+
+const addToggle = document.querySelector('.add-ui-toggle') as HTMLElement;
+const addMenu = document.querySelector('.add-ui-menu') as HTMLElement;
+
+addToggle.addEventListener('click', () => {
+	addMenu.classList.toggle('add-ui--open');
 });
 
 export function updateDebugInfo(
