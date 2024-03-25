@@ -14,5 +14,4 @@ function main(): void {
 	g.add(new m.Linear(1, 0, 2, 'blue'));
 	g.add(new m.Linear(-1, 0, 2, 'pink'));
 	g.add(new m.Linear(-3, 6, 2, 'green'));
-	g.add(new m.Linear(0.2, -2, 2, 'orange'));
 }
