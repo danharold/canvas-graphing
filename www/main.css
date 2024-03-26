@@ -74,26 +74,59 @@ canvas {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	gap: 10px;
 	box-sizing: border-box;
 	text-align: right;
 	right: 0;
-	margin-right: -320px;
+	margin-right: -40vw;
 	transition: all 0.3s;
 	padding: 0rem;
 	color: #fff;
 	min-width: 150px;
+	transition: all 0.3s ease;
+	overflow: hidden;
+	height: auto;
 }
 
-.add-ui-menu > div {
+.add-ui-menu > p {
 	pointer-events: all;
 	font-size: 15px;
-	/* background-color: rgba(255, 255, 255, 0.1); */
-	padding: 10px;
-	gap: 10px;
 	border-radius: 3px;
+	border: white;
+	border-radius: 1px;
 }
 
 .add-ui--open {
 	margin-right: 0px;
+}
+
+.drawer {
+    opacity: 0;
+    transition: opacity 0.65s ease, max-height 0.65s ease, height 0.65s ease; /* Transition opacity and max-height over 0.3 seconds with ease */
+    max-height: 0; /* Initially hide the drawer */
+    will-change: opacity, height; /* Hint to the browser that these properties will be animated */
+	pointer-events: all;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+	align-items: end;
+}
+
+.drawer > * {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.drawer.open {
+    opacity: 1;
+    max-height: 500px;
+}
+
+.drawer > div {
+	background-color: rgba(255, 255, 255, 0.3);
+	font-size: 15px;
+	text-align: center;
+	padding: 2px;
+	border: none;
+	width: 50px;
 }
