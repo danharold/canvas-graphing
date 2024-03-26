@@ -1,4 +1,5 @@
-import { Drawable } from '../components/models';
+import Graph from '../components/Graph';
+import { Drawable, Linear } from '../components/models';
 import { CanvasTransformManager } from './CanvasTransformManager';
 import { getWorldBoundary } from './utils';
 
@@ -21,32 +22,26 @@ addToggle.addEventListener('click', () => {
 
 // function to create buttons for several plotting options
 // also on click, open a drawer with relevant inputFields
-interface Option {
+export interface Option {
 	name: string;
 	inputFields: string[];
 }
-function createPlotMenu(plotOptions: Option[]): void {
+export function createPlotMenu(plotOptions: Option[], g: Graph): void {
 	plotOptions.forEach((option) => {
 		const button = document.createElement('p');
 		button.textContent = option.name;
 		button.addEventListener('click', () => {
-			createDrawer(option, button);
+			createDrawer(option, button, g);
 		});
 		addMenu.appendChild(button);
 	});
 }
 
-// initialise the menu
-const plotOptions: Option[] = [
-	{ name: 'point', inputFields: [] },
-	{ name: 'linear', inputFields: ['m', 'c'] },
-	{ name: 'blablabla', inputFields: [] },
-	{ name: 'trigonometric', inputFields: [] }
-];
-createPlotMenu(plotOptions);
-
 // create a drawer given a plot option, allowing relevant inputs
-function createDrawer(option: Option, button: HTMLElement) {
+// TODO:
+// - drawers still a little buggy, appearing above the button then moving down
+// - removing flex from .drawer fixes this but then can mess arrangement up
+function createDrawer(option: Option, button: HTMLElement, g: Graph) {
 	const addMenu = document.querySelector('.add-ui-menu') as HTMLElement;
 
 	// if an existing drawer exists, remove it
@@ -90,7 +85,7 @@ function createDrawer(option: Option, button: HTMLElement) {
 	const plotButton = document.createElement('div');
 	plotButton.textContent = 'add';
 	plotButton.addEventListener('click', () => {
-		console.log('addplot', option);
+		addPlot(option, g);
 	});
 	drawer.appendChild(plotButton);
 
@@ -100,6 +95,27 @@ function createDrawer(option: Option, button: HTMLElement) {
 	setTimeout(() => {
 		drawer.classList.add('open');
 	}, 10);
+}
+
+function addPlot(option: Option, g: Graph) {
+	const inputs = option.inputFields.map((input: string): number => {
+		const inputElement = document.getElementById(
+			input + 'Input'
+		) as HTMLInputElement;
+		return parseFloat(inputElement.value);
+	});
+	const colours = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+	const colourIndex = Math.floor(Math.random() * colours.length);
+	if (inputs.every((input) => !isNaN(input))) {
+		switch (option.name) {
+			case 'linear':
+				g.add(new Linear(inputs[0], inputs[1], 2, colours[colourIndex])); // Example color: "red"
+				break;
+			// TODO: add more plot options
+		}
+	} else {
+		alert('Please enter valid values for all input fields.');
+	}
 }
 
 export function updateDebugInfo(

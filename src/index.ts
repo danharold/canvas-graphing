@@ -1,6 +1,8 @@
 import Graph from './components/Graph';
 import * as m from './components/models';
 
+import { Option, createPlotMenu } from './utils/ui';
+
 document.addEventListener('DOMContentLoaded', () => {
 	const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 	if (canvas) {
@@ -9,9 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function main(): void {
+	// initialise graph
 	let g = new Graph();
-	//g.add(new m.Line({ x: -5, y: -5 }, { x: 5, y: 5 }, 2, 'red'));
-	g.add(new m.Linear(1, 0, 2, 'blue'));
-	g.add(new m.Linear(-1, 0, 2, 'pink'));
-	g.add(new m.Linear(-3, 6, 2, 'green'));
+
+	// initialise the menu
+	const plotOptions: Option[] = [
+		{ name: 'point', inputFields: [] },
+		{ name: 'linear', inputFields: ['m', 'c'] },
+		{ name: 'blablabla', inputFields: [] },
+		{ name: 'trigonometric', inputFields: [] }
+	];
+	createPlotMenu(plotOptions, g);
 }
